@@ -71,6 +71,11 @@ export default function CustomerTransactions() {
 
   const doTransfer = async (e) => {
     e.preventDefault();
+    // Validate: cannot transfer to the same account
+    if (String(transForm.FromAccountID) === String(transForm.ToAccountID)) {
+      setMsg('❌ Cannot transfer to the same account.');
+      return;
+    }
     try {
       await apiClient.post('/transactions/transfer', transForm);
       setMsg('✅ Transfer successful!');
@@ -107,9 +112,17 @@ export default function CustomerTransactions() {
                 onClick={() => handleAccountSwitch(a.AccountID)}
               >
                 #{a.AccountID} · {a.AccountTypeName} · ${Number(a.Balance || 0).toLocaleString()}
+                {a.AccountStatus === 'Frozen' && ' 🔒'}
               </button>
             ))}
           </div>
+
+          {/* Frozen account warning */}
+          {myAccounts.find(a => a.AccountID == selectedAccount)?.AccountStatus === 'Frozen' && (
+            <div className="alert alert-danger py-2 mb-3">
+              🔒 <strong>This account is frozen.</strong> Transactions are blocked. Please contact the bank.
+            </div>
+          )}
 
           {/* Tabs */}
           <ul className="nav nav-tabs mb-3">

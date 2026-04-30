@@ -77,7 +77,7 @@ export default function Accounts() {
 
       {/* View tabs */}
       <ul className="nav nav-tabs mb-3">
-        {[['all','All'],['multiple','Multiple Accounts'],['joint','Joint Accounts'],['active','Active w/ Profile']].map(([k,l]) => (
+        {[['all','All'],['multiple','Multiple Accounts (>2)'],['joint','Joint Accounts'],['active','Active w/ Profile']].map(([k,l]) => (
           <li className="nav-item" key={k}>
             <button className={`nav-link ${view===k?'active':''}`} onClick={() => load(k)}>{l}</button>
           </li>
@@ -132,38 +132,42 @@ export default function Accounts() {
         <table className="table table-bordered table-hover table-sm">
           <thead className="table-dark">
             <tr>
-              <th>ID</th><th>Customer</th><th>Type</th><th>Ownership</th>
-              <th>Balance</th><th>Status</th><th>Risk</th><th>Actions</th>
+              {view === 'all' && <><th>ID</th><th>Customer</th><th>Type</th><th>Ownership</th>
+              <th>Balance</th><th>Status</th><th>Risk</th><th>Actions</th></>}
+              {view === 'multiple' && <><th>Customer ID</th><th>Total Accounts</th></>}
+              {view === 'joint' && <><th>Account ID</th><th>Primary Owner</th><th>Joint Holder</th><th>Type</th><th>Balance</th><th>Status</th></>}
+              {view === 'active' && <><th>Account ID</th></>}
             </tr>
           </thead>
           <tbody>
-            {list.map(a => (
+            {list.map((a, i) => (
               <>
-                <tr key={a.AccountID}>
-                  <td>{a.AccountID}</td>
-                  <td>{a.FirstName} {a.LastName}</td>
-                  <td>{a.AccountTypeName}</td>
-                  <td>{a.AccountOwnershipType}</td>
-                  <td>${Number(a.Balance || 0).toLocaleString()}</td>
-                  <td>
-                    <span className={`badge bg-${a.AccountStatus === 'Active' ? 'success' : a.AccountStatus === 'Frozen' ? 'primary' : 'warning text-dark'}`}>
-                      {a.AccountStatus}
-                    </span>
-                  </td>
-                  <td>{a.RiskScore}</td>
-                  <td>
-                    <button className="btn btn-sm btn-warning me-1"
-                      onClick={() => { setEditId(a.AccountID); setEditForm({ AccountStatus: a.AccountStatus || 'Active', RiskScore: a.RiskScore || '' }); }}>
-                      Edit
-                    </button>
-                    <button className="btn btn-sm btn-danger" onClick={() => handleDelete(a.AccountID)}>Delete</button>
-                  </td>
-                </tr>
-                {editId === a.AccountID && (
+                {view === 'all' && (
+                  <tr key={a.AccountID}>
+                    <td>{a.AccountID}</td>
+                    <td>{a.FirstName} {a.LastName}</td>
+                    <td>{a.AccountTypeName}</td>
+                    <td>{a.AccountOwnershipType}</td>
+                    <td>${Number(a.Balance || 0).toLocaleString()}</td>
+                    <td>
+                      <span className={`badge bg-${a.AccountStatus === 'Active' ? 'success' : a.AccountStatus === 'Frozen' ? 'primary' : 'warning text-dark'}`}>
+                        {a.AccountStatus}
+                      </span>
+                    </td>
+                    <td>{a.RiskScore}</td>
+                    <td>
+                      <button className="btn btn-sm btn-warning me-1"
+                        onClick={() => { setEditId(a.AccountID); setEditForm({ AccountStatus: a.AccountStatus || 'Active', RiskScore: a.RiskScore || '' }); }}>
+                        Edit
+                      </button>
+                      <button className="btn btn-sm btn-danger" onClick={() => handleDelete(a.AccountID)}>Delete</button>
+                    </td>
+                  </tr>
+                )}
+                {view === 'all' && editId === a.AccountID && (
                   <tr key={`edit-${a.AccountID}`} className="table-warning">
                     <td colSpan={8}>
                       <div className="d-flex gap-2 align-items-center p-1">
-                        {/* CHECK: AccountStatus IN ('Active','Under Review','Frozen') */}
                         <select className="form-select form-select-sm" style={{ width: 160 }}
                           value={editForm.AccountStatus}
                           onChange={e => setEditForm({ ...editForm, AccountStatus: e.target.value })}>
@@ -179,6 +183,31 @@ export default function Accounts() {
                         <button className="btn btn-sm btn-secondary" onClick={() => setEditId(null)}>Cancel</button>
                       </div>
                     </td>
+                  </tr>
+                )}
+                {view === 'multiple' && (
+                  <tr key={i}>
+                    <td>{a.CustomerID}</td>
+                    <td>{a.TotalAccounts}</td>
+                  </tr>
+                )}
+                {view === 'joint' && (
+                  <tr key={i}>
+                    <td>{a.AccountID}</td>
+                    <td>{a.FirstName} {a.LastName}</td>
+                    <td>{a.JointFirstName} {a.JointLastName}</td>
+                    <td>{a.AccountTypeName}</td>
+                    <td>${Number(a.Balance || 0).toLocaleString()}</td>
+                    <td>
+                      <span className={`badge bg-${a.AccountStatus === 'Active' ? 'success' : a.AccountStatus === 'Frozen' ? 'primary' : 'warning text-dark'}`}>
+                        {a.AccountStatus}
+                      </span>
+                    </td>
+                  </tr>
+                )}
+                {view === 'active' && (
+                  <tr key={i}>
+                    <td>{a.AccountID}</td>
                   </tr>
                 )}
               </>

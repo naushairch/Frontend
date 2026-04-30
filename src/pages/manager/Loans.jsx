@@ -97,10 +97,10 @@ export default function Loans() {
         <table className="table table-sm table-bordered table-hover">
           <thead className="table-dark">
             <tr>
-              {view === 'all' && <><th>Loan ID</th><th>Customer</th><th>Amount</th><th>Interest %</th><th>Start</th><th>End</th><th>Status</th></>}
-              {view === 'summary' && <><th>CustomerID</th><th>Name</th><th>Loans</th><th>Total Amount</th><th>Paid</th><th>Balance</th></>}
+              {view === 'all' && <><th>Loan ID</th><th>Customer</th><th>Amount</th><th>Interest %</th><th>Start</th><th>End</th><th>Status</th><th>Amt Paid</th></>}
+              {view === 'summary' && <><th>CustomerID</th><th>Name</th><th>Total Loans</th><th>Total Loaned</th><th>Paid</th><th>Remaining</th></>}
               {view === 'debt-free' && <><th>CustomerID</th><th>Name</th></>}
-              {view === 'high-risk' && <><th>CustomerID</th><th>Name</th><th>Risk Score</th><th>Loan Amount</th></>}
+              {view === 'high-risk' && <><th>CustomerID</th><th>Name</th><th>Risk Score</th><th>Total Loan</th></>}
             </tr>
           </thead>
           <tbody>
@@ -113,11 +113,12 @@ export default function Loans() {
                   <td>{row.InterestRate}%</td>
                   <td>{row.StartDate?.split('T')[0]}</td>
                   <td>{row.EndDate?.split('T')[0]}</td>
-                  <td><span className={`badge bg-${row.LoanStatus==='Active'?'success':'secondary'}`}>{row.LoanStatus}</span></td>
+                  <td><span className={`badge bg-${row.LoanStatusName==='Active'?'success':row.LoanStatusName==='Completed'?'secondary':row.LoanStatusName==='Defaulted'?'danger':'warning text-dark'}`}>{row.LoanStatusName}</span></td>
+                  <td>${Number(row.AmountPaid||0).toLocaleString()}</td>
                 </>}
                 {view === 'summary' && <>
                   <td>{row.CustomerID}</td><td>{row.FirstName} {row.LastName}</td>
-                  <td>{row.TotalLoans}</td><td>${Number(row.TotalAmount||0).toLocaleString()}</td>
+                  <td>{row.TotalLoans}</td><td>${Number(row.TotalLoaned||0).toLocaleString()}</td>
                   <td>${Number(row.TotalPaid||0).toLocaleString()}</td><td>${Number(row.RemainingBalance||0).toLocaleString()}</td>
                 </>}
                 {view === 'debt-free' && <>
