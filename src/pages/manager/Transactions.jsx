@@ -71,7 +71,7 @@ export default function Transactions() {
 
       {/* Tabs */}
       <ul className="nav nav-tabs mb-3">
-        {['list','deposit','withdraw','transfer','reverse'].map(t => (
+        {['list','deposit','withdraw','transfer'].map(t => (
           <li className="nav-item" key={t}>
             <button className={`nav-link ${tab===t?'active':''}`} onClick={() => setTab(t)}>
               {t.charAt(0).toUpperCase()+t.slice(1)}
@@ -147,17 +147,6 @@ export default function Transactions() {
             <div className="col-4"><input className="form-control" placeholder="Purpose" value={transForm.Purpose} onChange={e=>setTransForm({...transForm,Purpose:e.target.value})} /></div>
             <div className="col-4"><input className="form-control" placeholder="Location" value={transForm.Location} onChange={e=>setTransForm({...transForm,Location:e.target.value})} /></div>
             <div className="col-12"><button className="btn btn-primary" type="submit">Transfer</button></div>
-          </form>
-        </div>
-      )}
-
-      {tab === 'reverse' && (
-        <div className="card p-3" style={{maxWidth:400}}>
-          <h5>↩️ Reverse Transaction</h5>
-          <form onSubmit={doReverse} className="row g-2">
-            <div className="col-6"><input className="form-control" placeholder="Transaction ID" type="number" value={revForm.TransactionID} onChange={e=>setRevForm({...revForm,TransactionID:e.target.value})} required /></div>
-            <div className="col-6"><input className="form-control" placeholder="Reason" value={revForm.Reason} onChange={e=>setRevForm({...revForm,Reason:e.target.value})} /></div>
-            <div className="col-12"><button className="btn btn-dark" type="submit">Reverse</button></div>
           </form>
         </div>
       )}

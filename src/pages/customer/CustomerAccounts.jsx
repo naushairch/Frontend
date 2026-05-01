@@ -17,8 +17,8 @@ export default function CustomerAccounts() {
 
   const load = async () => {
     try {
-      const r = await apiClient.get('/accounts');
-      setAccounts(r.data.filter(a => a.CustomerID == customerId));
+      const r = await apiClient.get(`/accounts/customer/${customerId}`);
+      setAccounts(r.data);
     } catch { setMsg('Failed to load accounts'); }
   };
 

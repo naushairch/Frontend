@@ -104,11 +104,17 @@ export default function Accounts() {
             <div className="col-md-4">
               {/* CHECK: AccountOwnershipType IN ('Private','Joint') */}
               <select className="form-select" value={form.AccountOwnershipType}
-                onChange={e => setForm({ ...form, AccountOwnershipType: e.target.value })}>
+                onChange={e => setForm({ ...form, AccountOwnershipType: e.target.value, JointHolderID: '' })}>
                 <option value="Private">Private</option>
                 <option value="Joint">Joint</option>
               </select>
             </div>
+            {form.AccountOwnershipType === 'Joint' && (
+              <div className="col-md-4">
+                <input className="form-control" placeholder="Joint Customer ID" type="number"
+                  value={form.JointHolderID || ''} onChange={e => setForm({ ...form, JointHolderID: e.target.value })} required />
+              </div>
+            )}
             <div className="col-md-4">
               <input className="form-control" placeholder="Initial Balance" type="number" step="0.01"
                 value={form.Balance} onChange={e => setForm({ ...form, Balance: e.target.value })} />
